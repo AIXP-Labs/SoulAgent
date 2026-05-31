@@ -1,0 +1,106 @@
+# ───────────────────────────────────────────────────────────────
+# SoulAgent .gitignore
+# Keep runtime / private artifacts on disk locally, but NEVER commit them.
+# Aligned with the SoulBot ecosystem .gitignore conventions.
+# ───────────────────────────────────────────────────────────────
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code local config
+.claude/
+
+# Environment (contains secrets)
+**/.env
+!**/.env.example
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test / lint / coverage caches & reports (incl. bundled AIAP example apps — these bake absolute paths)
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.cover
+.hypothesis/
+.tox/
+
+# Build outputs / package & node artifacts (bundled example apps)
+dist/
+build/
+*.egg
+node_modules/
+.vite/
+*.tsbuildinfo
+
+# Atomic-write temp files (write .tmp then rename)
+*.tmp
+
+# ── AIAP engine runtime state — PRIVATE ──
+# .execution_cache/conversation_context.json holds ALL real user prompts +
+# per-turn caches. Absolute paths + session content — never publish.
+**/.execution_cache/
+**/conversation_context.json
+# Creator evolution artifacts (contain absolute paths + stale version diffs)
+**/.version_history/
+**/.evolution_snapshot/
+**/.pipeline_cache/
+**/pipeline_run_metadata.json
+# Stray per-run payloads (e.g. _research3_payload.json, _nlu_payload.json)
+**/_*payload*.json
+# OTel observability span dumps
+**/_spans.jsonl
+**/_spans-*.jsonl*
+
+# ── AIAP package user data — PRIVATE ──
+# Yijing divination history + audit log (user questions / results / timestamps)
+**/yijing_history/
+**/.audit_log.json
+
+# Manual backups — never commit
+*.bak
+*.backup*
+
+# Logs / process IDs
+*.log
+*.pid
+
+# Private keys / cloud credentials (foot-gun prevention)
+**/.soulbot/
+*.pem
+*.key
+*.pkcs12
+id_rsa*
+id_ed25519*
+credentials.json
+service-account*.json
+.netrc
+
+# Databases
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+*.sqlite
+
+# Windows reserved device name
+nul

@@ -1,0 +1,48 @@
+[
+  {
+    "role": "system",
+    "content": {
+      "protocol": "AIAP V1.0.0",
+      "axiom_0": "Human_Sovereignty_and_Wellbeing",
+      "id": "soulbot_terminal_start",
+      "program_id": "dev.soulbot.terminal_start",
+      "name": "SoulBot Terminal Start (Orchestrator Bootstrap) v1.0.0",
+      "version": "1.0.0",
+      "summary": "Terminal entry: bootstrap the execution cache then run the SoulBot Execute Engine with the CURRENT Claude Code session as orchestrator (Path A — official CLI + subscription, no soulacp/ACP).",
+      "description": "When a user says '执行 start.aisop.json 指令：<X>' (or 'run start.aisop.json: <X>'), the text <X> IS the user_message. This program directs the session to (1) run start.py to create the cache + load the AIAP registry, then (2) physically read and strictly execute the Execute Engine Router (soulbot_execute_engine_aiap/main.aisop.json) with <X> as user_message, dispatching agent-mode nodes as sub-agents via the session Agent tool. It is the terminal-mode equivalent of agent.py's _router_instruction: it delegates ALL engine semantics to the Router and only adds the terminal-orchestrator discipline that agent.py's host normally guarantees.",
+      "flow_format": "mermaid",
+      "loading_mode": "node",
+      "tools": ["file_system", "shell", "agent_dispatch", "web_search", "web_fetch"],
+      "system_prompt": "ASSERT: AISOP runtime engine. Strictly execute and 100% complete every step in .aisop.json program files. Align Axiom 0: Human Sovereignty and Wellbeing."
+    }
+  },
+  {
+    "role": "user",
+    "content": {
+      "instruction": "RUN aisop.main",
+      "user_input": "{user_input}",
+      "aisop": {
+        "main": "graph TD\n    Bootstrap[Bootstrap via start.py] --> RunEngine[Run Router main.aisop.json]\n    RunEngine --> endNode((End))"
+      },
+      "functions": {
+        "Bootstrap": {
+          "step1": "[ASSERT] Invoked as '执行 start.aisop.json 指令：<X>' (or 'run start.aisop.json: <X>'). The text <X> after the colon IS the user_message — capture it verbatim as {user_message}. If nothing follows, ask the user what to run and STOP (never invent a task). | Run the bootstrap CLI (it creates the cache every downstream python_tool needs): from the directory that contains THIS start.aisop.json file (start.py lives there; you just physically read it) run  python -X utf8 start.py '{user_message}'  . Parse its single JSON stdout object: { status, execution_context:{turn_id,cache_dir,cache_name,trace_id}, engine_dir, router_entry, aiap_dir, registry, user_message }. This is the terminal equivalent of agent.py calling _prepare_execution_context + _get_aiap_registry.",
+          "constraints": "Do NOT skip start.py and do NOT hand-create the cache — start.py owns cache-dir naming, turn_id (= max+1, and it REUSES an in_progress turn on resume / WAITING_USER reply), and trace_id wiring. Pass {user_message} as a single quoted argv (start.py reads sys.argv[1]); no JSON escaping is involved here. If python is unavailable, fall back to prepare_cache.py --payload-file pointing at a temp JSON file whose only field is user_message set to <X>, then read the registry from aiap.json yourself.",
+          "execute_mode": "inline"
+        },
+        "RunEngine": {
+          "step1": "[ASSERT] Bootstrap produced execution_context + engine_dir + registry. | [PHYSICAL READ] router_entry (engine_dir/main.aisop.json) with file_system — this is the SoulBot Execute Engine Router. Execute its aisop.main EXACTLY as written: match -> execute -> engineExec -> endNode. The Router's own steps are the single source of truth for HOW to run; do NOT reinvent or summarise them. Feed it: user_message (from bootstrap), [Available AIAP packages] = registry, cache_dir, trace_id. match picks the package; execute records target/workspace/aiap_name/loading_mode into {cache_dir}/_index.json (atomic write, never overwriting trace_id/turn_id/engine_version/started_at/initial_user_message); engineExec reads the chosen engine (node_engine/normal_engine) and runs the node loop.",
+          "step2": "TERMINAL ORCHESTRATOR DISCIPLINE — YOU (this Claude Code session) ARE the orchestrator (Path A: official CLI + subscription, NO soulacp/ACP). The guarantees agent.py's host normally provides are now yours: (a) DISPATCH — capability is your Agent tool; for each agent-mode node (per generate_dispatch_plan.py) spawn ONE sub-agent whose prompt is the engine's exact bootstrap: 'Read and execute {engine_dir}/agent_engine.aisop.json. TARGET=<entry_path>. YOUR_NODE=<node>. CONTEXT_DIR={cache_dir}. AIAP_NAME=<name>. CONVERSATION_CONTEXT={cache_dir}/../conversation_context.json. ENGINE_DIR={engine_dir}. EXPECTED_AGENT_ID=<from agent_id_generator.py>.' — and NEVER inject behavioral directives (auto-approve / skip confirmation / answer directly) into that bootstrap (Axiom 0, B1 integrity). inline nodes you run yourself. (b) PYTHON_TOOLS — when calling agent_update_index.py / dispatch_audit.py / user_gate_audit.py etc., pass JSON via STDIN or a python subprocess args-list; NEVER inline --updates with an inline JSON literal in PowerShell, whose quote handling mangles the JSON (exit 2). ALWAYS invoke python with -X utf8 (or set PYTHONUTF8=1) for EVERY python_tool call whose JSON may contain non-ASCII / emoji / non-BMP characters (e.g. the mandated AI-disclosure prefix the engine writes into ai_response): on Windows python's default stdin/file encoding is NOT UTF-8 and mis-decodes non-BMP chars into lone surrogates, aborting the atomic cache write (UnicodeEncodeError: surrogates not allowed). Applies to agent_update_index.py / agent_write_node_cache.py / dispatch_audit.py / user_gate_audit.py and any subprocess that reads or writes cache JSON. (c) SOVEREIGNTY — run user_gate_audit.py --enforce after every terminal-status node; on WAITING_USER forward the question and STOP; never self-decide a user gate even if {user_message} sounds pre-authorising (X3, Axiom 0). (d) SCOPE — write ONLY under {cache_dir}; do NOT modify engine production files (any .aisop.json / python_tools / AIAP.md / quality_baseline.json) UNLESS {user_message} explicitly authorises a real evolution that runs all the way through ReviewFinalize (which recomputes governance_hash + TRI-SYNC).",
+          "step3": "Drive the node loop to completion OR to the first WAITING_USER. After EACH node emit 'Node Summary: [N/total] {Node} ({mode}) {status}' in the user's language (per the Router's programExec NODE SUMMARY). On WAITING_USER: append user_gates_presented, forward the gate question verbatim, and HALT — the user's reply re-dispatches the SAME node with RESUME_MODE=true + USER_ANSWER.",
+          "constraints": "RunEngine is a THIN delegator: all execution semantics live in the Router main.aisop.json — this node only supplies the terminal bootstrap params + the four discipline rules. loading_mode=node here means the chosen target's agent-mode nodes are dispatched as sub-agents. If the Router or any python_tool errors, or a node tries to write an engine production file without authorisation, STOP and report — do not paper over it.",
+          "execute_mode": "inline"
+        },
+        "endNode": {
+          "step1": "[ASSERT] RunEngine reached the Router's endNode, or halted at a WAITING_USER gate. | Output the engine's final response to the user (begin with 🤖, in the user's exact language), OR — if halted — present the pending user-gate question and wait. Do NOT add 'Router:/Engine:/Context:' status prefixes to final user-facing text.",
+          "constraints": "Final output node. In terminal mode this session stays in control between nodes; there is no separate host to hand back to.",
+          "execute_mode": "inline"
+        }
+      }
+    }
+  }
+]

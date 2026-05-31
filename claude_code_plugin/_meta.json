@@ -1,0 +1,16 @@
+{
+  "owner": "AIXP-Labs",
+  "slug": "soulagent",
+  "displayName": "SoulAgent",
+  "description": "SoulBot Execute Engine as a Claude Code skill — /soulagent runs the AIAP engine (chat, Yijing divination, AIAP create/evolve) with the current interactive session as orchestrator (Path A: official CLI + subscription, no soulacp/ACP).",
+  "license": "Apache-2.0",
+  "homepage": "https://soulagent.dev/",
+  "repository": "https://github.com/AIXP-Labs/SoulAgent",
+  "author": { "name": "SoulAgent.dev", "email": "noreply@soulagent.dev" },
+  "keywords": ["ai", "agent", "skill", "aisop", "aiap", "soulbot", "claude-code", "yijing"],
+  "engine": { "name": "SoulBot Execute Engine" },
+  "latest": {
+    "version": "1.0.0"
+  },
+  "history": []
+}

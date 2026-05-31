@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "soulagent",
+  "displayName": "SoulAgent",
+  "version": "1.0.0",
+  "description": "SoulBot Execute Engine as a Claude Code skill — chat / Yijing divination / AIAP create-evolve, with the current interactive session as orchestrator (Path A: official CLI + subscription, no soulacp/ACP).",
+  "author": { "name": "SoulAgent.dev", "email": "noreply@soulagent.dev" },
+  "homepage": "https://soulagent.dev/",
+  "repository": "https://github.com/AIXP-Labs/SoulAgent",
+  "license": "Apache-2.0",
+  "keywords": ["ai", "agent", "skill", "aisop", "aiap", "soulbot", "yijing", "claude-code"]
+}
