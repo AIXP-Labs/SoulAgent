@@ -27,6 +27,14 @@
 
 然后在终端里调用：**`/soulagent:run <任务>`** —— 例如 `/soulagent:run 帮我算一卦：今天适合发布吗`。逐任务走查见 [GUIDE_CN.md](GUIDE_CN.md)。
 
+**更新** —— 发布新版本后，刷新市场缓存并重装以拉取新版本（在你的终端 shell 里运行；在 Claude Code 内用 `/plugin …` 等效）：
+
+```
+claude plugin marketplace update aixp
+claude plugin uninstall soulagent@aixp
+claude plugin install soulagent@aixp
+```
+
 ---
 
 ## 目录结构（仓库根 = 文档 · 两个自包含适配器：`claude_code_plugin/` + `soulagent/`）

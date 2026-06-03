@@ -27,6 +27,14 @@ Packages the **SoulBot Execute Engine** as a Claude Code skill: invoke it in you
 
 Then invoke it in your terminal: **`/soulagent:run <task>`** — e.g. `/soulagent:run cast a hexagram: is today good for a release?`. See [GUIDE_EN.md](GUIDE_EN.md) for per-task walkthroughs.
 
+**Update** — after a new release, refresh the marketplace cache and reinstall to pick up the new version (run in your shell; `/plugin …` inside Claude Code is equivalent):
+
+```
+claude plugin marketplace update aixp
+claude plugin uninstall soulagent@aixp
+claude plugin install soulagent@aixp
+```
+
 ---
 
 ## Layout (repo root = docs · two self-contained adapters: `claude_code_plugin/` + `soulagent/`)
