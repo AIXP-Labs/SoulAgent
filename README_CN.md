@@ -18,6 +18,17 @@
 
 ---
 
+## 安装（Claude Code CLI）
+
+```
+/plugin marketplace add AIXP-Labs/SoulAgent
+/plugin install soulagent@aixp
+```
+
+然后在终端里调用：**`/soulagent:run <任务>`** —— 例如 `/soulagent:run 帮我算一卦：今天适合发布吗`。逐任务走查见 [GUIDE_CN.md](GUIDE_CN.md)。
+
+---
+
 ## 目录结构（仓库根 = 文档 · 两个自包含适配器：`claude_code_plugin/` + `soulagent/`）
 
 ```

@@ -1,0 +1,19 @@
+{
+  "name": "aixp",
+  "owner": { "name": "AIXP Labs", "email": "noreply@soulagent.dev" },
+  "description": "AIXP Labs plugin marketplace for Claude Code — AISOP/AIAP-powered agents.",
+  "plugins": [
+    {
+      "name": "soulagent",
+      "source": "./claude_code_plugin",
+      "description": "SoulBot Execute Engine as a Claude Code skill — chat / Yijing divination / AIAP create-evolve.",
+      "version": "1.0.0",
+      "author": { "name": "SoulAgent.dev", "email": "noreply@soulagent.dev" },
+      "homepage": "https://soulagent.dev/",
+      "repository": "https://github.com/AIXP-Labs/SoulAgent",
+      "license": "Apache-2.0",
+      "keywords": ["ai", "agent", "skill", "aisop", "aiap", "soulbot", "yijing", "claude-code"],
+      "category": "productivity"
+    }
+  ]
+}

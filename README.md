@@ -18,6 +18,17 @@ Packages the **SoulBot Execute Engine** as a Claude Code skill: invoke it in you
 
 ---
 
+## Install (Claude Code CLI)
+
+```
+/plugin marketplace add AIXP-Labs/SoulAgent
+/plugin install soulagent@aixp
+```
+
+Then invoke it in your terminal: **`/soulagent:run <task>`** — e.g. `/soulagent:run cast a hexagram: is today good for a release?`. See [GUIDE_EN.md](GUIDE_EN.md) for per-task walkthroughs.
+
+---
+
 ## Layout (repo root = docs · two self-contained adapters: `claude_code_plugin/` + `soulagent/`)
 
 ```
