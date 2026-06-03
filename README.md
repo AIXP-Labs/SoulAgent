@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-skill%20%2F%20plugin-orange.svg)](https://code.claude.com/docs/en/skills)
+[![Install](https://img.shields.io/badge/install-soulagent%40aixp-7c3aed.svg)](https://github.com/AIXP-Labs/SoulAgent)
 
 [中文文档](README_CN.md) | English
 

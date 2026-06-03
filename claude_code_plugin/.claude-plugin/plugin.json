@@ -3,7 +3,7 @@
   "name": "soulagent",
   "displayName": "SoulAgent",
   "version": "1.0.0",
-  "description": "SoulBot Execute Engine as a Claude Code skill — chat / Yijing divination / AIAP create-evolve, with the current interactive session as orchestrator (Path A: official CLI + subscription, no soulacp/ACP).",
+  "description": "SoulBot Execute Engine as a Claude Code skill / plugin. Your current session orchestrates the full AIAP engine — chat, Yijing divination, and creating / evolving any AIAP agent program. Glass-box, sovereignty-first (Axiom 0), no API key required.",
   "author": { "name": "SoulAgent.dev", "email": "noreply@soulagent.dev" },
   "homepage": "https://soulagent.dev/",
   "repository": "https://github.com/AIXP-Labs/SoulAgent",
