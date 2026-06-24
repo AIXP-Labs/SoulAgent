@@ -14,12 +14,6 @@
 /plugin install soulagent@aixp
 ```
 
-**From the Claude community marketplace** (once listed):
-```
-/plugin marketplace add anthropics/claude-plugins-community
-/plugin install soulagent@claude-community
-```
-
 Restart Claude Code after installing so the `/soulagent:run` command registers.
 
 ---
@@ -47,7 +41,7 @@ The session itself becomes the engine's terminal orchestrator: it physically rea
 - **Glass-box** — every step is an inspectable AISOP/AIAP node; nothing is hidden behind an opaque API.
 - **Sovereignty-first (Axiom 0)** — never invents tasks; user gates are surfaced verbatim and never auto-approved.
 - **No API key** — runs on your existing Claude Code session (official CLI + subscription), no separate key or service.
-- **Scoped tools** — `Read Write Task Bash(python *)`; the engine runs only its own bundled `python_tools`, with **no network / web tools** and no arbitrary shell. Invoked only on explicit `/soulagent:run` (`disable-model-invocation: true`).
+- **Scoped adapter tools** — `Read Write Task Bash(python *) Bash(python3 *)`; the adapter bootstraps the bundled engine through local Python and is invoked only on explicit `/soulagent:run` (`disable-model-invocation: true`). Some bundled AIAP packages declare optional web-search / web-fetch capabilities; if the host does not provide them, the orchestrator must degrade or stop instead of pretending they ran.
 
 ## License
 

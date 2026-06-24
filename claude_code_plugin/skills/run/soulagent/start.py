@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""start.py — Terminal bootstrap for running the SoulBot Execute Engine with a
-Claude Code session as the orchestrator (Path A: official CLI subprocess +
-subscription OAuth, NO soulacp/ACP layer).
+"""start.py — terminal bootstrap for running the SoulBot Execute Engine with
+the current host session as the orchestrator (host-neutral / Claude Code /
+Codex plugin paths, NO soulacp/ACP layer).
 
 It mirrors the NON-INTERACTIVE parts of agent.py's _router_instruction:
   - prepare_execution_context()  -> create cache dir + conversation_context turn
@@ -11,16 +11,20 @@ It mirrors the NON-INTERACTIVE parts of agent.py's _router_instruction:
                                      Router matches a user message against
 
 Usage:
-    python start.py "<user_message>"
+    python -B -X utf8 start.py "<non-empty user_message>"
+
+If a shell accidentally splits the message into multiple argv tokens, start.py
+joins sys.argv[1:] with spaces as a defensive fallback. Hosts should still pass
+the task as one argv value for exact round-trip fidelity.
 
 Prints exactly ONE JSON object to stdout (the bootstrap block) that
-start.aisop.json instructs the session to consume:
+start.aisop.json instructs the current host session to consume:
     {
       "status": "ok",
       "execution_context": {turn_id, cache_dir, cache_name, trace_id},
       "engine_dir":   "...\\soulbot_execute_engine_aiap",
       "router_entry": "...\\soulbot_execute_engine_aiap\\main.aisop.json",
-      "aiap_dir":     "...\\Soul_Agent\\aiap",
+      "aiap_dir":     "...\\soulagent\\aiap",
       "registry":     [ {name, summary, entry, loading_mode, workspace_dir}, ... ],
       "user_message": "<user_message>"
     }
@@ -82,7 +86,14 @@ def _load_registry() -> list:
 
 
 def main() -> int:
-    user_message = sys.argv[1] if len(sys.argv) > 1 else ""
+    user_message = " ".join(sys.argv[1:]).strip()
+    if not user_message:
+        print(json.dumps({
+            "status": "error",
+            "error": "missing_user_message",
+            "message": "Pass one non-empty user_message argument.",
+        }, ensure_ascii=False))
+        return 2
 
     # 1. Create cache dir + conversation_context turn (cleanup runs inside).
     #    If the latest turn is still in_progress (e.g. resuming a WAITING_USER

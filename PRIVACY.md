@@ -2,11 +2,11 @@
 
 _Last updated: 2026-06-03_
 
-**Short version: SoulAgent collects nothing. It runs on your machine and has no server or backend.**
+**Short version: SoulAgent collects nothing. It runs on your machine and has no SoulAgent server or backend.**
 
 ## What SoulAgent is
 
-SoulAgent is a Claude Code skill / plugin that runs the SoulBot Execute Engine locally. Your current Claude Code session is the orchestrator — there is **no SoulAgent server, backend, or hosted service**.
+SoulAgent packages the SoulBot Execute Engine as local Claude Code and Codex skills, plus a host-neutral direct engine entry. Your current host session is the orchestrator — there is **no SoulAgent server, backend, or hosted service**.
 
 ## Data we collect
 
@@ -18,13 +18,14 @@ SoulAgent writes only to local files inside your own workspace, which never leav
 
 - `**/.execution_cache/` — per-run execution cache (includes the prompts of the current run). Git-ignored.
 - `**/yijing_history/` — optional Yijing divination history (your questions + results), only if you use divination. Git-ignored.
+- `**/.nihil_backup/`, `*_backup.*`, and `*.bak` — temporary local rollback or backup artifacts created by evolution workflows. Git-ignored and rejected by release checks.
 - OpenTelemetry spans, if you enable observability, are written **locally**; no external exporter is configured by default.
 
 You can delete these directories at any time. The bundled Yijing package follows a data-minimization policy: no personal identifiers, no biometric data, no third-party sharing, with a lazy local purge of old records.
 
 ## Network
 
-The engine's own tools are file-system based. SoulAgent sends nothing to us. If a task you run explicitly requires web research, the engine may use **Claude Code's own built-in web search / fetch** — those requests are made by Claude Code itself (subject to Anthropic's terms), not by any SoulAgent service.
+The engine's own tools are file-system based. SoulAgent sends nothing to us. If a task you run explicitly requires web research, the active host may use its own built-in web search / fetch capability. Those requests are made by the host tool you are using, subject to that host's terms, not by any SoulAgent service.
 
 ## Children
 
@@ -40,4 +41,4 @@ Any updates to this policy will be published in this file in the repository.
 
 ## Contact
 
-noreply@soulagent.dev · <https://github.com/AIXP-Labs/SoulAgent>
+noreply@SoulAgent.dev · <https://github.com/AIXP-Labs/SoulAgent>

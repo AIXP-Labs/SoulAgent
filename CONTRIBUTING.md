@@ -18,18 +18,19 @@ Thank you for your interest in contributing to SoulAgent!
 
 ## What SoulAgent Is
 
-SoulAgent packages the **SoulBot Execute Engine** as a Claude Code skill/plugin (Path A: official CLI + subscription, no soulacp/ACP). It is part of the `soulbot.dev` Executor Layer — see [GOVERNANCE.md](GOVERNANCE.md). Contributions therefore touch one of three areas:
+SoulAgent packages the **SoulBot Execute Engine** as Claude Code and Codex skills, plus a host-neutral direct engine entry (Path A: official host CLI + subscription where applicable, no soulacp/ACP). It is part of the `soulbot.dev` Executor Layer — see [GOVERNANCE.md](GOVERNANCE.md). Contributions therefore touch one of four areas:
 
-1. **Packaging / skill layer** — `SKILL.md`, `start.aisop.json`, `start.py`, `plugin.json`, install/distribution
-2. **Engine / AIAP layer** — `claude_code_plugin/skills/run/soulagent/soulbot_execute_engine_aiap/`, `claude_code_plugin/skills/run/soulagent/aiap/*_aiap/` (these mirror upstream; deep protocol changes flow through `aiap.dev`)
-3. **Docs** — README, this file, etc.
+1. **Packaging / skill layer** — `claude_code_plugin/`, `codex_plugin/`, `.agents/plugins/`, `.claude-plugin/`, `SKILL.md`, `plugin.json`, install/distribution
+2. **Engine / AIAP layer** — source engine at `soulagent/soulagent/`, plus bundled copies under `claude_code_plugin/skills/run/soulagent/` and `codex_plugin/skills/run/soulagent/` (deep protocol changes flow through `aiap.dev`)
+3. **Release tooling** — `scripts/sync_plugin_engines.ps1`, `scripts/sync_codex_plugin.ps1`, `scripts/release_check.ps1`, gitignore/release hygiene
+4. **Docs** — README, guides, architecture, privacy, security, this file, etc.
 
 ## How to Contribute
 
 ### Reporting Issues
 
 - Use [GitHub Issues](https://github.com/AIXP-Labs/SoulAgent/issues) to report bugs, suggest features, or propose new packages
-- Include Claude Code CLI version, Python version, OS, and exact invocation
+- Include Claude Code or Codex CLI version, Python version, OS, and exact invocation
 - Provide minimal reproduction steps
 - For AISOP / AIAP-related issues, link to the relevant `.aisop.json` file
 - **Never paste private content** — scrub real paths, usernames, secrets, and `.execution_cache/` contents from logs (see [.gitignore](.gitignore))
@@ -46,8 +47,10 @@ SoulAgent packages the **SoulBot Execute Engine** as a Claude Code skill/plugin 
 ### Quality Standards
 
 - `python_tools/` follow the engine's existing style; Python 3.10+ type hints where practical
-- Always invoke `python` with `-X utf8` for any tool that reads/writes JSON containing non-ASCII / emoji (Windows surrogate guard)
+- Always invoke `python` with at least `-X utf8` for any tool that reads/writes JSON containing non-ASCII / emoji; release/smoke checks use `python -B -X utf8` (Windows surrogate and pycache guard)
 - No wildcard imports; keep functions documented
+- Before release, run `python -m pip install -r requirements-dev.txt`, then `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\release_check.ps1`; GitHub Actions runs the same gate on push, pull request, and manual dispatch with the approved anonymous release metadata.
+- For final local release verification with both host CLIs installed, run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\release_check.ps1 -RequireHostCli`.
 
 ### AISOP / AIAP Contributions
 
@@ -58,6 +61,7 @@ Changes to AISOP blueprints (`.aisop.json`) or AIAP packages (`*_aiap/`) should:
 - Preserve the engine's four terminal-orchestrator disciplines (DISPATCH / PYTHON_TOOLS / SOVEREIGNTY / SCOPE)
 - Keep governance metadata (`AIAP.md`, `quality_baseline.json`, TRI-SYNC `governance_hash`) consistent
 - Never bake absolute paths (e.g. a real `$HOME`) into templates — keep them relative / placeholder
+- Keep bundled engine copies synchronized. `scripts/release_check.ps1` rejects Claude/Codex bundle drift and runtime/private artifacts.
 
 ### Bilingual Note
 

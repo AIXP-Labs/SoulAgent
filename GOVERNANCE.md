@@ -1,6 +1,6 @@
 # SoulAgent Governance
 
-SoulAgent is a **distribution artifact of the SoulBot ecosystem** — it packages the SoulBot Execute Engine as a Claude Code skill/plugin. It is governed by the same decentralized, federated trust model that governs the AIXP protocol family, designed to isolate the structure of intelligence from the rules of its application.
+SoulAgent is a **distribution artifact of the SoulBot ecosystem** — it packages the SoulBot Execute Engine as local Claude Code and Codex skills, plus a host-neutral direct engine entry. It is governed by the same decentralized, federated trust model that governs the AIXP protocol family, designed to isolate the structure of intelligence from the rules of its application.
 
 ## The Tripartite Chain
 
@@ -26,7 +26,7 @@ The source of governance and the steward of Axiom 0.
 
 The reference runtime environment, and its distributions.
 
-- **Responsibility**: Instantiates the AI Agent, resolves tools, manages memory layers, and enforces the `permissions` declared in the AISOP / AIAP package contract. **SoulAgent** delivers this runtime as a Claude Code skill/plugin, where the interactive session itself is the orchestrator (Path A).
+- **Responsibility**: Instantiates the AI Agent, resolves tools, manages memory layers, and enforces the `permissions` declared in the AISOP / AIAP package contract. **SoulAgent** delivers this runtime through Claude Code, Codex, and host-neutral adapters, where the active host session itself is the orchestrator (Path A).
 - **Philosophy**: Secure, performant, sandboxed.
 - **License**: Apache 2.0.
 
@@ -46,7 +46,7 @@ SoulAgent follows Semantic Versioning (SemVer):
 - **Minor**: Backward-compatible additions (new AIAP packages, capabilities)
 - **Patch**: Bug fixes, documentation corrections, non-normative clarifications
 
-The bundled engine carries its own version, independent of the SoulAgent package version (`1.0.0`) tracked in `plugin.json` and `_meta.json`. The Axiom 0 immutability constraint supersedes all versioning rules.
+The bundled engine carries its own version, independent of the SoulAgent package version (`1.0.0`) tracked by the Claude plugin manifest and `_meta.json`, the Codex plugin manifest and marketplace index, and the host-neutral skill footer. The Axiom 0 immutability constraint supersedes all versioning rules.
 
 ## Protocol Steering
 
@@ -54,7 +54,7 @@ The bundled engine carries its own version, independent of the SoulAgent package
 |--------|------|-------|
 | `aisop.dev` | Format Steward | `.aisop.json` specification, field definitions |
 | `aiap.dev` | Governance Steward | Protocol rules, quality standards, security model |
-| `soulbot.dev` | Runtime Steward | Reference implementation; **SoulAgent** = skill/plugin distribution |
+| `soulbot.dev` | Runtime Steward | Reference implementation; **SoulAgent** = Claude/Codex skill distribution plus host-neutral direct engine entry |
 
 ### Decision Process
 

@@ -17,13 +17,13 @@ The task text passed when this skill is invoked (your host's argument mechanism,
 
 1. **[READ]** the AIAP bootstrap program at `soulagent/start.aisop.json`.
 2. **Execute it exactly, 100%** as written: `Bootstrap → RunEngine → endNode`. The file's own steps are the single source of truth — do not reinvent, summarize, or skip.
-3. Bootstrap runs `python -X utf8 soulagent/start.py "<user_message>"` from this skill's directory; `start.py` self-locates `engine_dir` / `aiap_dir` via `__file__`. Parse its single JSON stdout object (`cache_dir`, `engine_dir`, `router_entry`, `registry`, ...).
+3. Bootstrap runs `python -B -X utf8 soulagent/start.py "<user_message>"` from this skill's directory; `start.py` self-locates `engine_dir` / `aiap_dir` via `__file__`. Parse its single JSON stdout object (`cache_dir`, `engine_dir`, `router_entry`, `registry`, ...).
 4. **[READ]** the Router (`engine_dir/main.aisop.json`) and run its flow `match → execute → engineExec → endNode`.
 
 ## Discipline (engine design philosophy — host-neutral)
 
 - **DISPATCH**: each agent-mode node → ONE sub-agent via **your host's sub-agent mechanism**, using the engine's exact bootstrap prompt; never inject auto-approve / skip-confirmation directives (Axiom 0).
-- **PYTHON_TOOLS**: pass JSON to python_tools via **STDIN or an args-list** (never inline JSON in a shell); always invoke `python -X utf8` (non-ASCII / emoji JSON fails with a surrogate error otherwise on Windows).
+- **PYTHON_TOOLS**: pass JSON to python_tools via **STDIN, temp JSON files with file-input flags, or an args-list** (never inline JSON in a shell); always invoke `python -B -X utf8` (non-ASCII / emoji JSON fails with a surrogate error otherwise on Windows, and `-B` prevents pycache residue).
 - **SOVEREIGNTY**: after every terminal-status node, run `user_gate_audit.py --enforce`; on `WAITING_USER`, forward the gate question **verbatim** and **STOP** — never decide for the user.
 - **SCOPE**: write only under the run's `cache_dir`; do not modify engine production files (`.aisop.json` / `python_tools` / `AIAP.md` / `quality_baseline.json`) unless the task explicitly authorizes a full evolution through ReviewFinalize.
 

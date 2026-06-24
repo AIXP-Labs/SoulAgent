@@ -1,0 +1,5 @@
+interface:
+  display_name: "SoulAgent Run"
+  short_description: "Run the SoulBot Execute Engine from Codex."
+  brand_color: "#2563EB"
+  default_prompt: "Use $soulagent-run to run SoulAgent for a short hello task."

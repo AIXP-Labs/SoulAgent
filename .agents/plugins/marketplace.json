@@ -1,0 +1,20 @@
+{
+  "name": "aixp",
+  "interface": {
+    "displayName": "AIXP Labs"
+  },
+  "plugins": [
+    {
+      "name": "soulagent",
+      "source": {
+        "source": "local",
+        "path": "./codex_plugin"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

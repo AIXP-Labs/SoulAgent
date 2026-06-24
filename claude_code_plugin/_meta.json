@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "homepage": "https://soulagent.dev/",
   "repository": "https://github.com/AIXP-Labs/SoulAgent",
-  "author": { "name": "SoulAgent.dev", "email": "noreply@soulagent.dev" },
+  "author": { "name": "SoulAgent.dev", "email": "noreply@SoulAgent.dev" },
   "keywords": ["ai", "agent", "skill", "aisop", "aiap", "soulbot", "claude-code", "yijing"],
   "engine": { "name": "SoulBot Execute Engine" },
   "latest": {

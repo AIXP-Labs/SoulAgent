@@ -1,0 +1,194 @@
+{
+  "name": "soulbot_execute_engine",
+  "version": "5.48.0",
+  "program_id": "dev.soulbot.execute_engine",
+  "protocol": "AIAP V1.0.0",
+  "pattern": "B+",
+  "description": "SoulBot Execute Engine — 4-module AISOP runtime (main Router + node_engine + agent_engine + normal_engine) providing intent matching, engine routing, sub-agent orchestration, crash recovery, 3-state circuit breaker, parallel dispatch, sys.* handling, NodeVerify/Decision-gate routing, interrupt relay, six-section node-info rendering, server-side agent_id, OTel SDK + OWASP ASI threat mapping, and a canonical governance hash with TRI-SYNC verification. Pattern B+ engine self-evolution lifecycle (target=runner=live, highest risk) with deterministic dispatch_plan generation, dispatch_audit, user-gate sovereignty enforcement, and version-synchronized modules. See version_history / evolution_history for the per-version changelog.",
+  "capabilities": {
+    "offered": [
+      "intent_matching",
+      "engine_routing",
+      "node_dispatch",
+      "sub_agent_orchestration",
+      "crash_recovery",
+      "circuit_breaker",
+      "parallel_dispatch",
+      "execution_observability",
+      "sys_call_handling",
+      "node_verify_audit",
+      "decision_node_routing",
+      "interrupt_relay",
+      "on_error_routing",
+      "steps_tracking",
+      "opentelemetry_sdk_integration",
+      "owasp_asi_threat_mapping",
+      "trace_id_propagation",
+      "bootstrap_validation",
+      "dispatch_audit_mandatory",
+      "governance_hash_tri_sync",
+      "dispatch_plan_compliance",
+      "server_side_agent_id_generation",
+      "dispatch_records_anti_forgery",
+      "integrity_only_audit",
+      "spawn_failure_evidence_enforcement",
+      "legit_illegitimate_fallback_classification",
+      "transient_cache_retry",
+      "degraded_reason_enum",
+      "write_cache_read_back_verification",
+      "deterministic_dispatch_plan_generation",
+      "dispatch_audit_pre_execution_gate",
+      "hmac_phase_2_cache_signing",
+      "nist_caisi_three_pillar_alignment",
+      "user_gate_audit",
+      "bootstrap_integrity_enforcement",
+      "sovereignty_gate_precedence",
+      "user_gates_presented_signal",
+      "agent_mode_last_completed_advancement",
+      "sovereignty_bug_protocol",
+      "user_language_anchor",
+      "user_language_conflict_detection",
+      "engine_self_node_info_rendering",
+      "engine_self_render_claim_audit"
+    ],
+    "required": [
+      "file_system"
+    ]
+  },
+  "modules": [
+    {
+      "id": "soulbot_execute_engine.main",
+      "file": "main.aisop.json",
+      "nodes": 5,
+      "execution_mode": "sequential",
+      "role": "Engine Router -- intent matching, engine selection, execution orchestration, WAITING_USER/MESSAGE_PENDING interrupt relay"
+    },
+    {
+      "id": "soulbot_execute_engine.node",
+      "file": "node_engine.aisop.json",
+      "nodes": 2,
+      "execution_mode": "hybrid",
+      "role": "Node Engine -- node-by-node execution with Sub Agent dispatch, crash recovery, circuit breaker, parallel dispatch, deterministic dispatch_plan generation, dispatch_audit, bootstrap integrity enforcement (B1), user_gate NODE VERIFY (B2), user_gates_presented signal (B4)"
+    },
+    {
+      "id": "soulbot_execute_engine.normal",
+      "file": "normal_engine.aisop.json",
+      "nodes": 2,
+      "execution_mode": "sequential",
+      "role": "Normal Engine -- node-by-node inline execution for loading_mode=normal packages, sys.* inline handling, NodeVerify, sovereignty gate enforcement (B1, v5.16.0 — writeCache.step3 runs user_gate_audit.py --enforce for terminal inline nodes)"
+    },
+    {
+      "id": "soulbot_execute_engine.agent",
+      "file": "agent_engine.aisop.json",
+      "nodes": 5,
+      "execution_mode": "sequential",
+      "role": "Agent Engine -- Sub Agent execution contract with sovereignty gate precedence (B3), agent-mode last_completed_node advancement (B1, v5.15.0), and RULES.sovereignty_bug (v5.17.0 — 3-tier classification for sovereignty toolset bugs). init, execute with sys.* RULES + sovereignty_bug, review, writeCache with steps_done tracking"
+    }
+  ],
+  "limitations": [
+    "Router does not read target AIAP content -- only passes path to Engine",
+    "Normal Engine crash recovery (NM4) is simplified compared to Node Engine -- no parallel dispatch (half-open circuit breaker added in v5.2.0, orphan functions cleaned in v5.3.0 C3)",
+    "Parallel dispatch only available in Node Engine for independent mermaid branches",
+    "sys.io.confirm/input/select are forced-blocking -- user sovereignty preserved (Axiom 0)",
+    "Decision Node gate routing requires both mermaid diamond syntax AND cache route field",
+    "generate_dispatch_plan.py handles mode assignment only; parallel_waves analysis stays with orchestrator (mermaid parsing not migrated this cycle)"
+  ],
+  "safety_card": {
+    "axiom_0": "Human_Sovereignty_and_Wellbeing",
+    "governance_mode": "NORMAL",
+    "trust_level": "internal",
+    "user_input_points": "All sys.io.confirm/input/select calls are forced_blocking -- user sovereignty preserved. Natural language USER_INPUT trigger words also force blocking.",
+    "data_access": "file_system only, non-destructive, workspace-scoped",
+    "error_handling": "retry with exponential backoff -> circuit breaker -> fallback -> inform user. on_error routing for typed errors (assertion_error, command_error, confirm_rejected, etc.)",
+    "eu_ai_act_art50": {
+      "applicability": "APPLICABLE — SoulBot Execute Engine orchestrates AI agent interactions with users. Art.50(1) requires AI-generated output marking. Art.50(2) requires disclosure when users interact with AI.",
+      "disclosure_status": "COMPLIANT",
+      "enforcement_date": "2026-08-02",
+      "compliance_measures": [
+        "output_mode includes explicit AI-generated disclosure prefix (Art.50(1) transparency labelling)",
+        "All responses begin with AI-signifying emoji prefix (visual disclosure)",
+        "system_prompt declares AI agent identity (Art.50(2) interaction disclosure)",
+        "safety_card documents compliance status for audit trail",
+        "Axiom 0 forced-blocking preserves human sovereignty (Art.50 spirit)",
+        "Plausible interaction standard applied: disclosure triggered where AI interaction is 'plausible' not just 'certain', per Commission draft Art.50 guidelines interpretation for autonomous agents"
+      ],
+      "watermarking_status": "NOT_REQUIRED — produces structured orchestration output, not synthetic media. Art.50(4) watermarking applies to image/audio/video.",
+      "penalties_context": "Up to 15M EUR or 3% of worldwide annual turnover for non-compliance",
+      "current_mitigations": "Axiom 0 forced-blocking, output_mode transparency disclosure, trust_level=3, safety_card audit trail"
+    },
+    "threat_mapping": {
+      "frameworks": [
+        {
+          "name": "OWASP ASI (Agentic Security Initiative) 2026",
+          "coverage": "ASI01-ASI10 fully mapped",
+          "status_summary": "10/10 GREEN (ASI01-ASI10 fully addressed). ASI01 governance_hash TRI-SYNC, ASI06 HMAC Phase 2 + cache integrity, ASI07 span_id IPC, ASI10 version drift detection. v5.21.0 verified."
+        },
+        {
+          "name": "NIST CAISI (AI Agent Standards Initiative) 2026",
+          "coverage": "Three-pillar alignment: standards facilitation (AIAP protocol), agent security/identity (server-side agent_id, dispatch_records), open-source protocol (AISOP specification)",
+          "status_summary": "MONITORING — AI Agent Interoperability Profile planned Q4 2026. NCCoE agent identity concepts (OAuth/OIDC/SPIFFE) tracked for future adoption."
+        },
+        {
+          "name": "EU CRA 2024/2847",
+          "coverage": "Vulnerability disclosure, SBOM, security updates",
+          "status_summary": "COMPLIANT"
+        },
+        {
+          "name": "ISO/IEC 42001:2023 AIMS",
+          "coverage": "Clause 4-10 + Annex A",
+          "status_summary": "COMPLIANT (self-assessed)"
+        }
+      ],
+      "mitigations": {
+        "ASI01_goal_drift": "governance_hash comparison at execution start",
+        "ASI06_cache_integrity": "cache HMAC verification on _index.json and node caches",
+        "ASI07_ipc_signatures": "inter-agent cache IPC signatures via span_id correlation",
+        "ASI10_runtime_drift": "version field comparison across modules at bootstrap",
+        "ASI06_key_rotation": "HMAC key rotation procedure: (1) generate new HMAC key via secrets.token_bytes(32), (2) enable dual-key window — accept both old and new keys for verification (grace period: 24h recommended), (3) verify new key acceptance across all cache read paths, (4) disable old key after grace period confirmation. Rotation interval: 90-day recommended, emergency rotation on key compromise. All verification MUST use hmac.compare_digest() (constant-time, ref CVE-2026-21713)."
+      }
+    },
+    "eu_cra": {
+      "applicability": "APPLICABLE",
+      "compliance_status": "COMPLIANT",
+      "vulnerability_reporting_deadline": "2026-09-11"
+    },
+    "iso_42001": {
+      "standard": "ISO/IEC 42001:2023",
+      "alignment_status": "COMPLIANT",
+      "certification": "SELF-ASSESSED",
+      "annex_a_controls": {
+        "A.2_ai_policy": "Axiom 0 policy + governance_mode",
+        "A.3_internal_organization": "Pattern B+ multi-module architecture",
+        "A.5_impact_assessment": "trust_level=3, threat_mapping ASI01-ASI10",
+        "A.6_data_management": "execution_cache scoped, atomic writes, HMAC Phase 1",
+        "A.8_transparency": "EU AI Act Art.50 disclosure compliance",
+        "A.9_accountability": "governance_hash TRI-SYNC + dispatch_audit"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "file_system",
+      "annotations": {
+        "read_only": false,
+        "destructive": false,
+        "idempotent": false,
+        "open_world": false
+      }
+    }
+  ],
+  "quality_summary": {
+    "three_dim_test_weighted": "4.949",
+    "grade": "S",
+    "dimensions": {
+      "cognitive": "5.00",
+      "intrinsic": "4.92",
+      "detail": "4.95"
+    },
+    "final_adjusted_score": "4.949",
+    "note": "Engine baseline scoring convention (weighted = C*0.25 + I*0.45 + D*0.30; Generate2 authoritative; dimensions reported deferred-excluded). Grade S on the long-standing high-quality plateau. Per-version changelog, regression flags, and finalize reconciliation are recorded in version_history / evolution_history, not duplicated here.",
+    "status": "final"
+  },
+  "governance_hash": "97ebfb711b41321eb4f6eb023cab2fd5cfc1a210cbb90b0e6c152f2bc418a2fb",
+  "hash_algorithm_version": "v1.0"
+}

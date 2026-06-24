@@ -51,6 +51,7 @@ build/
 node_modules/
 .vite/
 *.tsbuildinfo
+.release_tmp/
 
 # Atomic-write temp files (write .tmp then rename)
 *.tmp
@@ -79,6 +80,9 @@ node_modules/
 # Manual backups — never commit
 *.bak
 *.backup*
+*_backup.*
+*.backup.*
+**/.nihil_backup/
 
 # Logs / process IDs
 *.log

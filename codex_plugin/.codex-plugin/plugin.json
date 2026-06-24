@@ -1,0 +1,33 @@
+{
+  "name": "soulagent",
+  "version": "1.0.0",
+  "description": "SoulAgent / SoulBot Execute Engine for Codex. Orchestrate the bundled AISOP/AIAP engine for chat, Yijing divination, and AIAP create/evolve tasks; execution stays local and starts from the bundled start.aisop.json.",
+  "author": {
+    "name": "SoulAgent.dev",
+    "email": "noreply@SoulAgent.dev",
+    "url": "https://github.com/AIXP-Labs"
+  },
+  "homepage": "https://soulagent.dev/",
+  "repository": "https://github.com/AIXP-Labs/SoulAgent",
+  "license": "Apache-2.0",
+  "keywords": ["ai", "agent", "skill", "aisop", "aiap", "soulbot", "codex", "yijing"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SoulAgent",
+    "shortDescription": "Run the SoulBot Execute Engine from Codex.",
+    "longDescription": "SoulAgent packages the SoulBot Execute Engine as a Codex skill. The skill reads the bundled start.aisop.json bootstrap, runs start.py locally, and follows the AISOP/AIAP graph while preserving human sovereignty gates.",
+    "developerName": "SoulAgent.dev",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "websiteURL": "https://soulagent.dev/",
+    "privacyPolicyURL": "https://github.com/AIXP-Labs/SoulAgent/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/AIXP-Labs/SoulAgent/blob/main/LICENSE",
+    "defaultPrompt": [
+      "Use $soulagent-run to run SoulAgent for hello.",
+      "Use $soulagent-run to cast a Yijing hexagram.",
+      "Use $soulagent-run to create or evolve an AIAP package."
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}

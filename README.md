@@ -1,19 +1,20 @@
-# SoulAgent — SoulBot Execute Engine as a Claude Code Skill / Plugin
+# SoulAgent — SoulBot Execute Engine as a Claude Code / Codex Skill Plugin
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-skill%20%2F%20plugin-orange.svg)](https://code.claude.com/docs/en/skills)
+[![Codex](https://img.shields.io/badge/Codex-plugin-blue.svg)](https://github.com/openai/codex)
 [![Install](https://img.shields.io/badge/install-soulagent%40aixp-7c3aed.svg)](https://github.com/AIXP-Labs/SoulAgent)
 
 [中文文档](README_CN.md) | English
 
-Packages the **SoulBot Execute Engine** as a Claude Code skill: invoke it in your terminal and the current Claude Code session acts as the **orchestrator**, driving and strictly executing the full AIAP engine — chat, Yijing divination, and creating / evolving AIAP packages.
+Packages the **SoulBot Execute Engine** as Claude Code and Codex skills: invoke it in the host and the current session acts as the **orchestrator**, driving and strictly executing the full AIAP engine — chat, Yijing divination, and creating / evolving AIAP packages.
 
 - **Path A**: official Claude Code CLI + subscription, **no** soulacp / ACP layer. The current session *is* the orchestrator.
-- **Self-contained plugin**: the Claude Code adapter lives entirely in **`claude_code_plugin/`**. Inside it, `SKILL.md` (the thin adapter) sits at the skill root, and the portable engine is bundled under **`skills/run/soulagent/`**. The repo root holds only docs and repo-level metadata.
-- **Relative addressing**: `SKILL.md` reaches the engine via `${CLAUDE_SKILL_DIR}\soulagent\…` — zero absolute paths.
-- **Two adapters today**: `claude_code_plugin/` (Claude Code) and `soulagent/` (host-neutral, for non-Claude hosts / Form 2) sit side by side, each self-contained. Future host adapters (e.g. `gemini_plugin/`, `codex_plugin/`) follow the same pattern — see [ARCHITECTURE.md](ARCHITECTURE.md).
-- **Invocation**: loads as the `soulagent@skills-dir` plugin → **`/soulagent:run`**.
+- **Self-contained plugins**: `claude_code_plugin/` and `codex_plugin/` each bundle their own `skills/run/soulagent/` engine copy. The repo root holds docs, sync scripts, and repo-level metadata.
+- **Relative addressing**: adapters reach the engine inside their own skill root — no absolute path dependency after installation.
+- **Three adapters today**: `claude_code_plugin/` (Claude Code), `codex_plugin/` (Codex), and `soulagent/` (host-neutral / Form 2) sit side by side, each self-contained. See [ARCHITECTURE.md](ARCHITECTURE.md).
+- **Invocation**: Claude loads as `soulagent@skills-dir` → **`/soulagent:run`**. Codex exposes the `soulagent-run` skill through the local marketplace.
 
 **Project**: repo <https://github.com/AIXP-Labs/SoulAgent> ｜ homepage <https://soulagent.dev> ｜ license Apache-2.0 ｜ version 1.0.0 ｜ © 2026 AIXP Labs
 
@@ -38,13 +39,28 @@ claude plugin install soulagent@aixp
 
 ---
 
-## Layout (repo root = docs · two self-contained adapters: `claude_code_plugin/` + `soulagent/`)
+## Install (Codex)
+
+From the repository root, register or refresh the local Codex marketplace:
+
+```powershell
+codex plugin marketplace add .
+```
+
+Codex currently exposes marketplace management commands for plugins. The repo
+therefore ships `.agents/plugins/marketplace.json`, which points Codex to the
+self-contained `codex_plugin/` directory. After registration, invoke the
+SoulAgent run skill when you want Codex to orchestrate the bundled engine.
+
+---
+
+## Layout (repo root · three self-contained adapters: `claude_code_plugin/` + `codex_plugin/` + `soulagent/`)
 
 ```
 <path-to>\SoulAgent\               ← repo root (docs + repo-level metadata)
 ├── claude_code_plugin\                   ← self-contained Claude Code plugin (junction → here)
 │   ├── .claude-plugin\plugin.json        ← plugin manifest (name=soulagent, version/license/...)
-│   ├── _meta.json  LICENSE  NOTICE       ← travel with the plugin (zip / marketplace)
+│   ├── _meta.json  LICENSE  NOTICE       ← Claude registry metadata + distribution files
 │   └── skills\run\                        ← the skill (= ${CLAUDE_SKILL_DIR})
 │       ├── SKILL.md                       ← entry + orchestration discipline → /soulagent:run
 │       ├── LICENSE  NOTICE                ← Apache-2.0 (also carried at skill level)
@@ -56,13 +72,23 @@ claude plugin install soulagent@aixp
 │           │   └── soulbot_yijing_divination_aiap\        (normal: Yijing divination)
 │           ├── soulbot_execute_engine_aiap\  ← Execute Engine Router + engines + python_tools
 │           └── soulbot_intent_classifier_aiap\
-├── soulagent\                            ← host-neutral adapter (Form 2 / non-Claude hosts)
+├── codex_plugin\                         ← self-contained Codex plugin
+│   ├── .codex-plugin\plugin.json         ← Codex plugin manifest
+│   ├── README.md  LICENSE  NOTICE
+│   └── skills\run\
+│       ├── SKILL.md                      ← Codex adapter entry
+│       ├── LICENSE  NOTICE
+│       └── soulagent\                    ← bundled engine copy for Codex
+├── soulagent\                            ← host-neutral adapter (Form 2 / direct engine invocation)
 │   ├── SKILL.md                          ← generic (host-neutral) skill, no plugin.json
 │   ├── LICENSE  NOTICE
 │   └── soulagent\                        ← bundled engine (source identical to the Claude adapter's)
 ├── README.md  README_CN.md  CHANGELOG.md
 ├── GUIDE_EN.md  GUIDE_CN.md  ARCHITECTURE.md
 ├── CONTRIBUTING.md  CONTRIBUTING_CN.md  CODE_OF_CONDUCT.md  GOVERNANCE.md  SECURITY.md
+├── scripts\sync_plugin_engines.ps1  scripts\sync_codex_plugin.ps1  scripts\release_check.ps1
+├── .agents\plugins\marketplace.json       ← Codex local marketplace index
+├── .github\workflows\release-check.yml    ← GitHub Actions release gate
 ├── LICENSE  NOTICE                       ← repo-level
 └── .gitignore
 
@@ -71,6 +97,8 @@ C:\Users\<you>\.claude\skills\soulagent  ──junction──▶  <path-to>\Soul
 ```
 
 > Inside a plugin skill, `${CLAUDE_SKILL_DIR}` points at `claude_code_plugin/skills/run/` (where `SKILL.md` lives). The engine is in its `soulagent/` subdir, addressed as `${CLAUDE_SKILL_DIR}\soulagent\start.aisop.json`, `${CLAUDE_SKILL_DIR}\soulagent\start.py`, etc.
+
+> Inside the Codex skill, `SKILL.md` lives at `codex_plugin/skills/run/` and the engine is addressed relatively as `soulagent/start.aisop.json` and `soulagent/start.py`.
 
 > `.gitignore` (at the repo root, `**/`-globbed) excludes runtime/private artifacts (`.execution_cache/`, `conversation_context.json`, `yijing_history/`, `.evolution_snapshot/`, `*.bak`, keys, ...) wherever they sit — they **stay local and never reach GitHub**.
 
@@ -81,7 +109,9 @@ C:\Users\<you>\.claude\skills\soulagent  ──junction──▶  <path-to>\Soul
 | Item | Requirement |
 |---|---|
 | Claude Code CLI | 2.1.x (interactive mode, `claude`) |
+| Codex CLI | Plugin marketplace commands available (`codex plugin marketplace add`) |
 | Python | 3.10+ (3.12 here; `python` must be on PATH) |
+| Release checks | `python -m pip install -r requirements-dev.txt` |
 | OS | Windows (paths and junction shown Windows-style) |
 | Console encoding | UTF-8 recommended (CJK / emoji), see "Windows notes" |
 
@@ -106,9 +136,9 @@ Then **restart Claude Code**. Because the target contains `.claude-plugin/plugin
 
 ---
 
-## Skill mode vs Plugin mode
+## Claude Code skill mode vs plugin mode
 
-SoulAgent ships as a **plugin** (`/soulagent:run`). The same engine can also be wrapped as a plain standalone skill (`/soulagent`).
+For Claude Code, SoulAgent ships as a **plugin** (`/soulagent:run`). The same engine can also be wrapped as a plain standalone Claude skill (`/soulagent`).
 
 | | Plugin mode (shipped) | Standalone skill mode |
 |---|---|---|
@@ -119,15 +149,57 @@ SoulAgent ships as a **plugin** (`/soulagent:run`). The same engine can also be 
 | Multiple named entry points (`:run`, `:divine`, ...) | ✅ | ❌ |
 | Best for | sharing, versioned releases, marketplace | personal use, shortest name |
 
-In both, `SKILL.md` reaches the engine via `${CLAUDE_SKILL_DIR}\soulagent\…`. To run standalone, copy `claude_code_plugin/skills/run/` (SKILL.md + soulagent/) into a skill folder under `~/.claude/skills/soulagent/` and omit `plugin.json`. (Form 2 below works regardless — and is the right path for **non-Claude hosts**, which read the engine directly rather than any SKILL.md.)
+In both Claude Code layouts, `SKILL.md` reaches the engine via `${CLAUDE_SKILL_DIR}\soulagent\...`. To run standalone, copy `claude_code_plugin/skills/run/` (SKILL.md + soulagent/) into a skill folder under `~/.claude/skills/soulagent/` and omit `plugin.json`. Form 2 below works regardless, and is the right path for hosts that read the engine directly rather than any Claude `SKILL.md`.
 
 > Ecosystem note: organization grouping belongs at the **marketplace** layer (e.g. `soulagent@aixp-labs`), not the plugin namespace — so the plugin stays `soulagent` and the skill stays `run`.
 
 ---
 
+## Codex plugin mode
+
+Codex uses a separate host adapter under `codex_plugin/`. It is self-contained: its `SKILL.md` lives at `codex_plugin/skills/run/`, and its bundled engine lives at `codex_plugin/skills/run/soulagent/`.
+
+Register or refresh the local Codex marketplace from the repository root:
+
+```powershell
+codex plugin marketplace add .
+```
+
+The Codex skill entry is `soulagent-run`. It should read `soulagent/start.aisop.json`, run the local bootstrap with:
+
+```powershell
+python -B -X utf8 soulagent/start.py "<task>"
+```
+
+Then it must follow the returned engine bootstrap exactly. Agent-mode nodes require a real sub-agent mechanism in the host. If the current Codex environment cannot dispatch a required sub-agent, the orchestrator must stop and report the missing capability instead of pretending the node was executed.
+
+Before release, verify that all bundled adapters are still synced with the root engine and repo-level `LICENSE` / `NOTICE`:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\sync_plugin_engines.ps1 -Check
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\release_check.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\release_check.ps1 -RequireHostCli
+```
+
+The release gate validates engine bundle sync, Claude and Codex plugin metadata,
+local Git identity (`SoulAgent.dev` / `noreply@SoulAgent.dev`), GitHub Actions
+release-gate wiring, JSON parseability, repository policy files (`.gitignore` /
+`.gitattributes`), Python and PowerShell syntax, all Markdown local links,
+README heading alignment, distribution `LICENSE` / `NOTICE` copies,
+Claude/Codex adapter text boundaries, Codex interface capabilities, version
+consistency, privacy/secret hygiene, LF line endings, UTF-8 bootstrap
+round-trip, relative-path bootstrap smoke, Codex marketplace registration,
+Claude plugin validation, empty-input `start.py` rejection, split-argv fallback,
+and runtime/private artifact absence.
+Use `-RequireHostCli` for final local release verification when both `claude` and
+`codex` are installed; CI keeps host CLI checks optional and still validates the
+static manifests, bundles, archives, and bootstrap paths.
+
+---
+
 ## Invocation
 
-### Form 1: plugin skill (interactive mode, recommended)
+### Form 1A: Claude Code plugin skill (interactive mode, recommended)
 
 ```
 /soulagent:run <your task>
@@ -141,15 +213,25 @@ After restart, confirm the exact form in the `/` menu. `<your task>` is the engi
 /soulagent:run use creator to evolve <your-aiap-name>
 ```
 
+### Form 1B: Codex plugin skill
+
+Use the Codex skill by name:
+
+```
+Use $soulagent-run to run SoulAgent for hello.
+Use $soulagent-run to cast a Yijing hexagram: is today good for a release?
+Use $soulagent-run to create or evolve an AIAP package.
+```
+
 ### Form 2: invoke the bootstrap directly (no skill registration · host-agnostic)
 
-If you don't want to install the skill, or you're on a **non-Claude host** (Gemini CLI, Codex, etc.), just point the agent at the engine:
+If you don't want to install either plugin, or you're on a host without the Claude/Codex plugin installed, or on another host such as Gemini CLI, just point the agent at the engine:
 
 ```
 执行 start.aisop.json 指令：<your task>      (or: run start.aisop.json: <your task>)
 ```
 
-The text after the colon is the `user_message` — provided the context can locate `claude_code_plugin/skills/run/soulagent/start.aisop.json`. This is the portable interface: any agent that can read files + run Python + dispatch sub-agents can drive the engine this way.
+The text after the colon is the `user_message` — provided the context can locate one of the bundled `start.aisop.json` files. This is the portable interface: any agent that can read files, run Python, and dispatch real sub-agents can drive the engine this way.
 
 ### ⚠️ Not available under `claude -p` (headless)
 
@@ -174,22 +256,25 @@ The engine's Router **matches your message to an AIAP package**; if nothing matc
 ## How it runs internally (execution chain)
 
 ```
-invocation (/soulagent:run <task>  or  「执行 start.aisop.json 指令：<task>」)
-  │  SKILL.md: treat the task as user_message, physically read ${CLAUDE_SKILL_DIR}\soulagent\start.aisop.json and execute it strictly
+invocation
+  ├─ Claude Code: /soulagent:run <task>
+  ├─ Codex:       Use $soulagent-run ...
+  └─ Form 2:      run start.aisop.json: <task>
+      Treat <task> as user_message, physically read the bundled start.aisop.json, and execute it strictly.
   ▼
 start.aisop.json  (AIAP bootstrap program, 3 orchestration nodes)
-  ├─ [1] Bootstrap  → run  python -X utf8 start.py "<user_message>"  from claude_code_plugin/skills/run/soulagent/
-  │                   start.py builds cache(turn) + loads registry, self-locates the engine via __file__
+  ├─ [1] Bootstrap  → run start.py "<user_message>" from the adapter's bundled engine directory
+  │                   start.py rejects empty input, defensively joins split argv, then builds cache(turn) + loads registry via __file__
   ├─ [2] RunEngine  → physically read Router main.aisop.json; run match→execute→engineExec→endNode
   │                   · match: match user_message to an AIAP package (no match → direct reply)
   │                   · execute: record target/loading_mode into _index.json
   │                   · engineExec: pick node/normal engine by loading_mode, run the node loop
-  │                       - node mode: agent nodes dispatched as sub-agents via the Task tool
+  │                       - node mode: agent nodes dispatched through the host's real sub-agent mechanism
   │                       - normal mode: node loop, mostly inline
   └─ [3] endNode    → output the engine's final reply (starts with 🤖, user's language, EU AI Act Art.50 disclosure)
 ```
 
-**Fully relative addressing**: SKILL.md uses `${CLAUDE_SKILL_DIR}\soulagent\` → start.aisop.json self-references "the directory of this file" → start.py self-resolves via `__file__`. The junction's real target resolves to `<path-to>\SoulAgent\claude_code_plugin\skills\run\soulagent\`.
+**Host-relative addressing**: Claude Code uses `${CLAUDE_SKILL_DIR}\soulagent\`; Codex uses `SKILL_ROOT` / `codex_plugin/skills/run/soulagent/`; Form 2 uses whichever bundled engine directory the user points at. `start.aisop.json` self-references "the directory of this file", and `start.py` self-resolves via `__file__`. Bootstrap smoke and release checks invoke Python as `python -B -X utf8`. Hosts should pass the task as one argv value for exact fidelity; `start.py` joins split argv only as a defensive fallback for manual CLI use.
 
 ---
 
@@ -197,8 +282,9 @@ start.aisop.json  (AIAP bootstrap program, 3 orchestration nodes)
 
 As the orchestrator, the current session must obey (details in `start.aisop.json`'s `RunEngine.step2`):
 
-- **DISPATCH**: each agent-mode node is dispatched as ONE sub-agent via the **Task tool**, using the engine's exact bootstrap prompt; **never** inject behavioral directives (auto-approve / skip-confirmation) (Axiom 0, B1 integrity).
-- **PYTHON_TOOLS**: call `agent_update_index.py` / `dispatch_audit.py` / `user_gate_audit.py` etc. with JSON passed via **STDIN or an args-list**; **never** inline a JSON literal in PowerShell; and **always invoke `python -X utf8`** (JSON containing non-ASCII / emoji fails with a surrogate error on Windows otherwise).
+- **DISPATCH**: each agent-mode node is dispatched as ONE sub-agent through the host's real sub-agent mechanism (Claude Code Task tool; Codex equivalent if available), using the engine's exact bootstrap prompt; **never** inject behavioral directives (auto-approve / skip-confirmation). If the host cannot dispatch the required sub-agent, stop and report the missing capability (Axiom 0, B1 integrity).
+- **PYTHON_TOOLS**: call `agent_update_index.py` / `dispatch_audit.py` / `user_gate_audit.py` etc. with JSON passed via **STDIN, `--updates-file`, `--data-file`, or an args-list**; **never** inline a JSON literal in PowerShell; use `python -B -X utf8` for bootstrap/release checks and at least `python -X utf8` in interactive runs (JSON containing non-ASCII / emoji fails with a surrogate error on Windows otherwise).
+- **PACKAGE_TOOLS**: bundled AIAP packages may declare optional tools such as `web_search` / `web_fetch`; if the active host does not provide them, the orchestrator must use the package's documented degradation path or stop with a capability error, never fabricate external evidence.
 - **SOVEREIGNTY**: run `user_gate_audit.py --enforce` after every terminal-status node; on `WAITING_USER`, forward the gate question **verbatim** and **STOP** — never decide for the user.
 - **SCOPE**: write only under the run's `cache_dir`; **do not modify** engine production files (`.aisop.json` / `python_tools` / `AIAP.md` / `quality_baseline.json`) unless the task explicitly authorizes a real evolution that runs all the way through ReviewFinalize.
 
@@ -213,17 +299,29 @@ When the engine hits a decision that's yours to make, it **stops and asks** (a s
 | Symptom | Cause | Fix |
 |---|---|---|
 | CJK / emoji garbled in terminal | console defaults to GBK | `chcp 65001` to switch to UTF-8, or set `$env:PYTHONUTF8="1"` |
-| `UnicodeEncodeError: surrogates not allowed` | python read emoji JSON without UTF-8 | invoke python_tools uniformly with `python -X utf8 …` (already in start.aisop.json discipline) |
-| skill missing from the menu | junction not created / not restarted | recreate junction + restart Claude Code |
+| `UnicodeEncodeError: surrogates not allowed` | python read emoji JSON without UTF-8 | invoke smoke/release tools with `python -B -X utf8 ...`; use at least `python -X utf8 ...` interactively |
+| Claude skill missing from the menu | junction not created / not restarted | recreate junction + restart Claude Code |
+| Codex skill not available | local marketplace not registered or stale | run `codex plugin marketplace add .` from the repo root |
 
 ---
 
 ## Troubleshooting
 
-- **Invocation does nothing / not found**: confirm the junction exists (`Test-Path "$env:USERPROFILE\.claude\skills\soulagent\.claude-plugin\plugin.json"`) and Claude Code was restarted; check the exact namespaced form in the `/` menu.
+- **Claude plugin invocation does nothing / not found**: confirm the junction exists (`Test-Path "$env:USERPROFILE\.claude\skills\soulagent\.claude-plugin\plugin.json"`) and Claude Code was restarted; check the exact namespaced form in the `/` menu.
+- **Codex plugin not available**: register the local marketplace and run the release check:
+  ```powershell
+  codex plugin marketplace add .
+  powershell -NoProfile -ExecutionPolicy Bypass -File scripts\release_check.ps1
+  ```
+  The release check also verifies anonymized Git metadata, repository policy files, all Markdown local links, README heading alignment, distribution `LICENSE` / `NOTICE` copies, Claude/Codex adapter text boundaries, Codex interface capabilities, version consistency, JSON files, Python and PowerShell syntax, LF line endings, privacy/secret hygiene, UTF-8 bootstrap behavior, relative-path bootstrap behavior, empty-input `start.py` rejection, and split-argv fallback.
+- **Bundled engine or metadata drift**: verify the Claude and Codex engine copies still match the root engine, and that adapter `LICENSE` / `NOTICE` copies match the repo-level files:
+  ```powershell
+  powershell -NoProfile -ExecutionPolicy Bypass -File scripts\sync_plugin_engines.ps1 -Check
+  ```
 - **start.py errors / no cache**: run it once manually to verify:
   ```powershell
-  python -X utf8 "<path-to>\SoulAgent\claude_code_plugin\skills\run\soulagent\start.py" "test"
+  python -B -X utf8 "<path-to>\SoulAgent\claude_code_plugin\skills\run\soulagent\start.py" "test"
+  python -B -X utf8 "<path-to>\SoulAgent\codex_plugin\skills\run\soulagent\start.py" "test"
   ```
   It should print one JSON object (with `status:"ok"`, `engine_dir`, `registry`).
 - **creator evolution hangs for a while**: normal — node mode dispatches multiple sub-agents and runs a full pipeline; be patient, or test with a lightweight task first.
@@ -233,23 +331,45 @@ When the engine hits a decision that's yours to make, it **stops and asks** (a s
 
 ## Distribution
 
-### Route A (what you use now): `@skills-dir` plugin
+### Claude Route A (what you use now): `@skills-dir` plugin
 Junction `~/.claude/skills/soulagent` → `claude_code_plugin/`; it auto-loads as `soulagent@skills-dir`, no marketplace needed.
 
-### Route B: `.zip` archive
+### Claude Route B: `.zip` archive
 Zip the **plugin dir** (`claude_code_plugin/`), stripping runtime/private artifacts:
 
 ```powershell
 $stage = "<path-to>\_pkg\soulagent"
+$excludeDirs = @(
+  ".execution_cache", ".version_history", ".evolution_snapshot", ".nihil_backup",
+  ".pipeline_cache", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache",
+  ".release_tmp", "yijing_history", ".soulbot", "htmlcov", "node_modules",
+  "dist", "build", ".tox", ".hypothesis", ".venv", "venv", "env", ".git"
+)
+$excludeFiles = @(
+  "conversation_context.json", "pipeline_run_metadata.json", ".audit_log.json",
+  "credentials.json", ".netrc", "_*payload*.json", "_spans*.jsonl*",
+  "*_backup.*", "*.backup.*", "*.bak", "*.backup*", "*.pyc", "*.pyo",
+  "*.tmp", "*.log", "*.pid", "*.pem", "*.key", "*.pkcs12", "id_rsa*",
+  "id_ed25519*", "service-account*.json", "*.db", "*.db-wal", "*.db-shm",
+  "*.db-journal", "*.sqlite", "coverage.xml", ".coverage"
+)
 robocopy "<path-to>\SoulAgent\claude_code_plugin" $stage /E `
-  /XD ".execution_cache" ".version_history" ".evolution_snapshot" ".pipeline_cache" "__pycache__" ".pytest_cache" ".mypy_cache" ".ruff_cache" "yijing_history" "htmlcov" "node_modules" "dist" "build" ".git" `
-  /XF "*.bak" "*.tmp" "coverage.xml" ".coverage" "*.log"
+  /XD $excludeDirs `
+  /XF $excludeFiles
 Compress-Archive -Path "$stage\*" -DestinationPath "<path-to>\soulagent-1.0.0.zip" -Force
 ```
 Recipient: `claude --plugin-dir .\soulagent-1.0.0.zip` (or, once hosted, `--plugin-url`).
 
-### Route C: marketplace (formal release)
+### Claude Route C: marketplace (formal release)
 A marketplace repo with a root `.claude-plugin/marketplace.json` lists this plugin (source = the `claude_code_plugin/` dir); others run `/plugin marketplace add AIXP-Labs/<marketplace-repo>` then `/plugin install soulagent@<marketplace>`. The AIXP ecosystem grouping lives here (e.g. `soulagent@aixp-labs`).
+
+### Codex route: local marketplace
+The repository root contains `.agents/plugins/marketplace.json`, which points Codex to `codex_plugin/`. Register it locally:
+
+```powershell
+codex plugin marketplace add .
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\release_check.ps1
+```
 
 > Before release: `git init`, then the repo-root `.gitignore` auto-excludes private artifacts; before pushing to a public repo, set a **local anonymized git identity** so your real name does not leak via commits.
 
@@ -260,8 +380,8 @@ A marketplace repo with a root `.claude-plugin/marketplace.json` lists this plug
 - Engine: **SoulBot Execute Engine Router**
 - AIAP packages: `soulbot_creator_evolution` (node) · `soulbot_yijing_divination` (normal)
 - No `soulbot_chat` in the registry → chat goes through **direct_reply**
-- Invocation: `/soulagent:run <task>` (plugin namespace) or `执行 start.aisop.json 指令：<task>`
-- Repo root = `<path-to>\SoulAgent` (docs); plugin root = `…\claude_code_plugin`; `SKILL.md` at `skills/run/`, **engine at `skills/run/soulagent/`**; junction → the plugin root
+- Invocation: Claude `/soulagent:run <task>`; Codex `Use $soulagent-run ...`; Form 2 `执行 start.aisop.json 指令：<task>`
+- Roots: repo root = `<path-to>\SoulAgent`; Claude plugin = `claude_code_plugin/`; Codex plugin = `codex_plugin/`; host-neutral adapter = `soulagent/`; each adapter keeps `SKILL.md` at `skills/run/` or equivalent and the engine at `soulagent/`
 - Aligned with **Axiom 0: Human Sovereignty and Wellbeing**
 - Repo <https://github.com/AIXP-Labs/SoulAgent> · homepage soulagent.dev · Apache-2.0 · v1.0.0 · © 2026 AIXP Labs
 
