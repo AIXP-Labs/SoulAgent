@@ -4,7 +4,7 @@
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-skill%20%2F%20plugin-orange.svg)](https://code.claude.com/docs/en/skills)
 [![Codex](https://img.shields.io/badge/Codex-plugin-blue.svg)](https://github.com/openai/codex)
-[![Install](https://img.shields.io/badge/install-soulagent%40aixp-7c3aed.svg)](https://github.com/AIXP-Labs/SoulAgent)
+[![Install](https://img.shields.io/badge/install-soulagent%40soulagent-7c3aed.svg)](https://github.com/AIXP-Labs/SoulAgent)
 
 [中文文档](README_CN.md) | English
 
@@ -24,7 +24,7 @@ Packages the **SoulBot Execute Engine** as Claude Code and Codex skills: invoke 
 
 ```
 /plugin marketplace add AIXP-Labs/SoulAgent
-/plugin install soulagent@aixp
+/plugin install soulagent@soulagent
 ```
 
 Then invoke it in your terminal: **`/soulagent:run <task>`** — e.g. `/soulagent:run cast a hexagram: is today good for a release?`. See [GUIDE_EN.md](GUIDE_EN.md) for per-task walkthroughs.
@@ -32,9 +32,9 @@ Then invoke it in your terminal: **`/soulagent:run <task>`** — e.g. `/soulagen
 **Update** — after a new release, refresh the marketplace cache and reinstall to pick up the new version (run in your shell; `/plugin …` inside Claude Code is equivalent):
 
 ```
-claude plugin marketplace update aixp
-claude plugin uninstall soulagent@aixp
-claude plugin install soulagent@aixp
+claude plugin marketplace update soulagent
+claude plugin uninstall soulagent@soulagent
+claude plugin install soulagent@soulagent
 ```
 
 ---
@@ -151,7 +151,7 @@ For Claude Code, SoulAgent ships as a **plugin** (`/soulagent:run`). The same en
 
 In both Claude Code layouts, `SKILL.md` reaches the engine via `${CLAUDE_SKILL_DIR}\soulagent\...`. To run standalone, copy `claude_code_plugin/skills/run/` (SKILL.md + soulagent/) into a skill folder under `~/.claude/skills/soulagent/` and omit `plugin.json`. Form 2 below works regardless, and is the right path for hosts that read the engine directly rather than any Claude `SKILL.md`.
 
-> Ecosystem note: organization grouping belongs at the **marketplace** layer (e.g. `soulagent@aixp-labs`), not the plugin namespace — so the plugin stays `soulagent` and the skill stays `run`.
+> Namespace note: the marketplace name is `soulagent`, the plugin name is `soulagent`, and the skill entry point stays `run`; install as `soulagent@soulagent`.
 
 ---
 
@@ -361,7 +361,7 @@ Compress-Archive -Path "$stage\*" -DestinationPath "<path-to>\soulagent-1.0.0.zi
 Recipient: `claude --plugin-dir .\soulagent-1.0.0.zip` (or, once hosted, `--plugin-url`).
 
 ### Claude Route C: marketplace (formal release)
-A marketplace repo with a root `.claude-plugin/marketplace.json` lists this plugin (source = the `claude_code_plugin/` dir); others run `/plugin marketplace add AIXP-Labs/<marketplace-repo>` then `/plugin install soulagent@<marketplace>`. The AIXP ecosystem grouping lives here (e.g. `soulagent@aixp-labs`).
+A marketplace repo with a root `.claude-plugin/marketplace.json` lists this plugin (source = the `claude_code_plugin/` dir); others run `/plugin marketplace add AIXP-Labs/SoulAgent` then `/plugin install soulagent@soulagent`.
 
 ### Codex route: local marketplace
 The repository root contains `.agents/plugins/marketplace.json`, which points Codex to `codex_plugin/`. Register it locally:

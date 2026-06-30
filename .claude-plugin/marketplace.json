@@ -1,7 +1,7 @@
 {
-  "name": "aixp",
-  "owner": { "name": "AIXP Labs", "email": "noreply@SoulAgent.dev" },
-  "description": "AIXP Labs plugin marketplace for Claude Code — AISOP/AIAP-powered agents.",
+  "name": "soulagent",
+  "owner": { "name": "SoulAgent.dev", "email": "noreply@SoulAgent.dev" },
+  "description": "SoulAgent plugin marketplace for Claude Code — AISOP/AIAP-powered agents.",
   "plugins": [
     {
       "name": "soulagent",

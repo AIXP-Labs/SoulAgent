@@ -8,10 +8,10 @@
 
 ## Install
 
-**From the AIXP marketplace** (available now):
+**From the SoulAgent marketplace**:
 ```
 /plugin marketplace add AIXP-Labs/SoulAgent
-/plugin install soulagent@aixp
+/plugin install soulagent@soulagent
 ```
 
 Restart Claude Code after installing so the `/soulagent:run` command registers.

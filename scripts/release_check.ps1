@@ -387,11 +387,11 @@ function Assert-CodexPluginShape {
   $enginePath = Join-Path $codexSkillPath "soulagent\start.aisop.json"
 
   $marketplace = Read-JsonFile $marketplacePath
-  if ($marketplace.name -ne "aixp") {
-    throw "Codex marketplace name must be 'aixp'."
+  if ($marketplace.name -ne "soulagent") {
+    throw "Codex marketplace name must be 'soulagent'."
   }
-  if ($marketplace.interface.displayName -ne "AIXP Labs") {
-    throw "Codex marketplace interface.displayName must be 'AIXP Labs'."
+  if ($marketplace.interface.displayName -ne "SoulAgent") {
+    throw "Codex marketplace interface.displayName must be 'SoulAgent'."
   }
   if (-not $marketplace.plugins -or $marketplace.plugins.Count -ne 1) {
     throw "Codex marketplace must contain exactly one plugin entry."
@@ -535,8 +535,8 @@ function Assert-ClaudePluginMetadata {
   $metaPath = Join-Path $claudePluginPath '_meta.json'
 
   $marketplace = Read-JsonFile $marketplacePath
-  if ($marketplace.name -ne 'aixp') {
-    throw "Claude marketplace name must be 'aixp'."
+  if ($marketplace.name -ne 'soulagent') {
+    throw "Claude marketplace name must be 'soulagent'."
   }
   if ($marketplace.owner.email -ne $approvedEmail) {
     throw 'Claude marketplace owner email is not the approved anonymous address.'
@@ -1452,8 +1452,8 @@ function Invoke-CodexMarketplaceSmoke {
       throw "Codex marketplace smoke did not create config.toml"
     }
     $configText = Get-Content -LiteralPath $configPath -Raw
-    if ($configText -notmatch '\[marketplaces\.aixp\]') {
-      throw "Codex marketplace smoke did not register marketplace 'aixp'"
+    if ($configText -notmatch '\[marketplaces\.soulagent\]') {
+      throw "Codex marketplace smoke did not register marketplace 'soulagent'"
     }
     if ($configText -notmatch 'source_type\s*=\s*"local"') {
       throw "Codex marketplace smoke did not register a local marketplace source"

@@ -1,7 +1,7 @@
 {
-  "name": "aixp",
+  "name": "soulagent",
   "interface": {
-    "displayName": "AIXP Labs"
+    "displayName": "SoulAgent"
   },
   "plugins": [
     {

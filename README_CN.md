@@ -4,7 +4,7 @@
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-skill%20%2F%20plugin-orange.svg)](https://code.claude.com/docs/en/skills)
 [![Codex](https://img.shields.io/badge/Codex-plugin-blue.svg)](https://github.com/openai/codex)
-[![Install](https://img.shields.io/badge/install-soulagent%40aixp-7c3aed.svg)](https://github.com/AIXP-Labs/SoulAgent)
+[![Install](https://img.shields.io/badge/install-soulagent%40soulagent-7c3aed.svg)](https://github.com/AIXP-Labs/SoulAgent)
 
 [English](README.md) | 中文文档
 
@@ -24,7 +24,7 @@
 
 ```
 /plugin marketplace add AIXP-Labs/SoulAgent
-/plugin install soulagent@aixp
+/plugin install soulagent@soulagent
 ```
 
 然后在终端里调用：**`/soulagent:run <任务>`** —— 例如 `/soulagent:run 帮我算一卦：今天适合发布吗`。逐任务走查见 [GUIDE_CN.md](GUIDE_CN.md)。
@@ -32,9 +32,9 @@
 **更新** —— 发布新版本后，刷新市场缓存并重装以拉取新版本（在你的终端 shell 里运行；在 Claude Code 内用 `/plugin …` 等效）：
 
 ```
-claude plugin marketplace update aixp
-claude plugin uninstall soulagent@aixp
-claude plugin install soulagent@aixp
+claude plugin marketplace update soulagent
+claude plugin uninstall soulagent@soulagent
+claude plugin install soulagent@soulagent
 ```
 
 ---
@@ -150,7 +150,7 @@ New-Item -ItemType Junction `
 
 两种 Claude Code 布局里，`SKILL.md` 都经 `${CLAUDE_SKILL_DIR}\soulagent\...` 够引擎。要 standalone：把 `claude_code_plugin/skills/run/`（SKILL.md + soulagent/）整体复制到 `~/.claude/skills/soulagent/` 下作为技能文件夹、并去掉 `plugin.json`。下文「形态 2」两种都可用，也适合那些直接读取引擎、而不是读取 Claude `SKILL.md` 的宿主。
 
-> 生态说明：组织聚合属于 **marketplace 层**（如 `soulagent@aixp-labs`），不是 plugin 命名空间 —— 所以 plugin 名保持 `soulagent`、技能名保持 `run`。
+> 命名空间说明：marketplace 名为 `soulagent`，plugin 名为 `soulagent`，skill 入口保持 `run`；安装目标为 `soulagent@soulagent`。
 
 ---
 
@@ -358,7 +358,7 @@ Compress-Archive -Path "$stage\*" -DestinationPath "<path-to>\soulagent-1.0.0.zi
 对方：`claude --plugin-dir .\soulagent-1.0.0.zip`（或托管后 `--plugin-url`）。
 
 ### Claude 路线 C：marketplace（正式发布）
-市场仓根部 `.claude-plugin/marketplace.json` 列出本插件（source = `claude_code_plugin/` 目录），对方 `/plugin marketplace add AIXP-Labs/<市场仓>` 后 `/plugin install soulagent@<市场>`。AIXP 生态聚合落在这一层（如 `soulagent@aixp-labs`）。
+市场仓根部 `.claude-plugin/marketplace.json` 列出本插件（source = `claude_code_plugin/` 目录），对方 `/plugin marketplace add AIXP-Labs/SoulAgent` 后 `/plugin install soulagent@soulagent`。
 
 ### Codex 路线：本地 marketplace
 仓库根包含 `.agents/plugins/marketplace.json`，指向 `codex_plugin/`。本地注册：
